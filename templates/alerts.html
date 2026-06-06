@@ -1,0 +1,107 @@
+<div class="row g-4 mb-4">
+    <!-- Active alerts list -->
+    <div class="col-lg-8">
+        <div class="glass-card h-100">
+            <h3 class="text-white h5 mb-4"><i class="fas fa-triangle-exclamation text-danger me-2"></i>Active Alerts Inbox</h3>
+            
+            <div class="d-flex flex-column gap-3">
+                {% for alert in active_alerts %}
+                <div class="alert-strip {{ alert.severity }}">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="p-2 rounded {% if alert.severity == 'Critical' %}bg-danger bg-opacity-20 text-danger{% else %}bg-warning bg-opacity-20 text-warning{% endif %}" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas {% if alert.severity == 'Critical' %}fa-radiation{% else %}fa-circle-exclamation{% endif %} fa-lg"></i>
+                        </div>
+                        <div>
+                            <div class="d-flex align-items-center gap-2">
+                                <strong class="text-white">{{ alert.alert_type }}</strong>
+                                <span class="badge {% if alert.severity == 'Critical' %}bg-danger{% else %}bg-warning{% endif %} btn-sm" style="font-size: 0.7rem;">{{ alert.severity }}</span>
+                                <span class="text-secondary" style="font-size: 0.75rem;">{{ alert.created_at|timesince }} ago</span>
+                            </div>
+                            <p class="text-secondary small mb-0 mt-1">{{ alert.message }}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Form to resolve alert -->
+                    <form action="/alerts/resolve/{{ alert.id }}/" method="POST" class="ms-3">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-cyber-outline">
+                            <i class="fas fa-check me-1"></i>Resolve
+                        </button>
+                    </form>
+                </div>
+                {% empty %}
+                <div class="text-center py-5 text-secondary">
+                    <i class="fas fa-circle-check fa-3x text-success opacity-25 mb-3"></i>
+                    <h4 class="text-secondary h5">No Active Alerts</h4>
+                    <p class="small">All stock positions, supplier delivery cycles, and demand spikes are currently in green zones.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Alerts Summary Indicators -->
+    <div class="col-lg-4">
+        <div class="glass-card h-100 d-flex flex-column justify-content-between">
+            <div>
+                <h3 class="text-white h5 mb-3"><i class="fas fa-chart-pie text-secondary me-2"></i>Alerts Outlook</h3>
+                
+                <div class="p-3 rounded bg-dark border border-secondary border-opacity-10 mb-3 text-center">
+                    <span class="text-secondary small d-block">Critical Stockout Warnings</span>
+                    <strong class="text-danger h2 font-monospace">{{ critical_count }}</strong>
+                </div>
+                
+                <div class="p-3 rounded bg-dark border border-secondary border-opacity-10 mb-3 text-center">
+                    <span class="text-secondary small d-block">Warning Level Messages</span>
+                    <strong class="text-warning h2 font-monospace">{{ warning_count }}</strong>
+                </div>
+                
+                <p class="text-secondary small mb-0">
+                    The alert system monitors:
+                </p>
+                <ul class="text-secondary small ps-3 mt-1">
+                    <li>Critical Stockout Risks (stock &lt; forecasted demand)</li>
+                    <li>Low Inventory Warnings (stock &lt; safety stock)</li>
+                    <li>Overstock Alerts (stock &gt; forecasted demand * 2.5)</li>
+                </ul>
+            </div>
+            
+            <a href="/settings/" class="btn btn-cyber-outline w-100 mt-2">
+                <i class="fas fa-bell me-2"></i>Edit Notification Limits
+            </a>
+        </div>
+    </div>
+</div>
+<!-- RESOLVED ALERTS ARCHIVE -->
+<div class="glass-card">
+    <h3 class="text-white h5 mb-4"><i class="fas fa-folder-closed text-secondary me-2"></i>Resolved History (Archived logs)</h3>
+    
+    <div class="table-responsive">
+        <table class="table cyber-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Alert Type</th>
+                    <th>Severity</th>
+                    <th>Message Details</th>
+                    <th>Resolved At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alert in resolved_alerts %}
+                <tr>
+                    <td><strong class="text-white">{{ alert.product_name }}</strong></td>
+                    <td>{{ alert.alert_type }}</td>
+                    <td><span class="badge bg-secondary">{{ alert.severity }}</span></td>
+                    <td>{{ alert.message }}</td>
+                    <td class="font-monospace small">Resolved (Logged)</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-secondary py-3">No resolved alert history found in archives.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

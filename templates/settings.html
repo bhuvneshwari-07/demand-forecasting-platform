@@ -1,0 +1,87 @@
+<div class="row g-4">
+    <!-- Configuration panel -->
+    <div class="col-lg-7">
+        <div class="glass-card">
+            <h3 class="text-white h5 mb-4"><i class="fas fa-sliders-h text-primary me-2"></i>Platform Settings</h3>
+            
+            <form action="/settings/" method="POST">
+                {% csrf_token %}
+                
+                <!-- Theme selection -->
+                <div class="mb-4">
+                    <label class="form-label d-block" for="theme-selector">User Interface Theme</label>
+                    <select name="theme" id="theme-selector" class="form-select">
+                        <option value="dark" {% if theme == 'dark' %}selected{% endif %}>Cyberpunk Dark Green (Default)</option>
+                        <option value="light" {% if theme == 'light' %}selected{% endif %}>Clean Enterprise Light</option>
+                    </select>
+                    <span class="text-secondary small mt-1 d-block">Adjust visual aesthetics of panels and charts.</span>
+                </div>
+                
+                <!-- Model pickers -->
+                <div class="mb-4">
+                    <label class="form-label d-block" for="model-selector">Forecast Engine Machine Learning Model</label>
+                    <select name="model_name" id="model-selector" class="form-select">
+                        <option value="LightGBM" {% if model_name == 'LightGBM' %}selected{% endif %}>LightGBM Regressor (Recommended)</option>
+                        <option value="XGBoost" {% if model_name == 'XGBoost' %}selected{% endif %}>XGBoost Regressor</option>
+                        <option value="Random Forest" {% if model_name == 'Random Forest' %}selected{% endif %}>Random Forest Regressor</option>
+                    </select>
+                    <span class="text-secondary small mt-1 d-block">Model used to run batch uploads and manual forecasts.</span>
+                </div>
+                
+                <!-- Notification settings -->
+                <div class="mb-4">
+                    <h4 class="text-white h6 border-bottom pb-2 mb-3">Notification Preferences</h4>
+                    
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="notify-email" checked>
+                        <label class="form-check-label text-secondary small" for="notify-email">Enable Email Alerts for Critical Stockouts</label>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="notify-system" checked>
+                        <label class="form-check-label text-secondary small" for="notify-system">Log Low Inventory Alerts to Dashboard Ticker</label>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="notify-weekly">
+                        <label class="form-check-label text-secondary small" for="notify-weekly">Send Weekly AI Stock Optimization Summary Reports</label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-cyber w-100">
+                    <i class="fas fa-save me-2"></i>Save Settings & Update Models
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Model description info card -->
+    <div class="col-lg-5">
+        <div class="glass-card h-100 d-flex flex-column justify-content-between">
+            <div>
+                <h3 class="text-white h5 mb-3"><i class="fas fa-brain text-success me-2"></i>Engine Parameters</h3>
+                
+                <div class="p-3 rounded bg-dark border border-secondary border-opacity-10 mb-3">
+                    <span class="text-secondary small d-block">Selected Algorithm</span>
+                    <strong class="text-white h5 font-monospace">{{ model_name }}</strong>
+                </div>
+                
+                <div class="text-secondary small mb-3">
+                    {% if model_name == 'LightGBM' %}
+                    <strong>LightGBM (Light Gradient Boosting Machine)</strong> is an optimized gradient boosting framework developed by Microsoft. It uses tree-based learning algorithms and is wowed by its training speed, high accuracy, and low memory consumption. It performs Target encoding and feature cuts with maximum precision.
+                    {% elif model_name == 'XGBoost' %}
+                    <strong>XGBoost (Extreme Gradient Boosting)</strong> is a powerful algorithm that implements gradient boosted decision trees designed for speed and performance. It has dominated kaggle and tabular datasets for years, utilizing parallel tree boosting to solve demanding logistics forecasts.
+                    {% else %}
+                    <strong>Random Forest</strong> is a robust meta estimator that fits a number of classifying decision trees on various sub-samples of the dataset and uses averaging to improve the predictive accuracy and control over-fitting. Highly stable and fully explainable.
+                    {% endif %}
+                </div>
+                
+                <p class="text-secondary small mb-0">
+                    * Modifying settings changes the forecasting metrics globally on the platform.
+                </p>
+            </div>
+            
+            <a href="/analytics/" class="btn btn-cyber-outline w-100 mt-3">
+                <i class="fas fa-chart-line me-2"></i>View Accuracy Benchmark Details
+            </a>
+        </div>
+    </div>
+</div>

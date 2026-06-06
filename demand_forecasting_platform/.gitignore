@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+
+forecast_env/
+venv/
+env/
+
+db.sqlite3
+
+media/
+
+staticfiles/
+
+.vscode/
+
+.env

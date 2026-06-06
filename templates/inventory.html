@@ -1,0 +1,94 @@
+<!-- TOP INVENTORY KPI GRID -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="glass-card text-center p-3">
+            <span class="text-secondary small d-block mb-1">Total Monitored Skus</span>
+            <strong class="text-white h2 font-monospace">{{ total_products }}</strong>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="glass-card text-center p-3" style="border-color: rgba(234, 179, 8, 0.3);">
+            <span class="text-secondary small d-block mb-1">Low Stock Warnings</span>
+            <strong class="text-warning h2 font-monospace">{{ low_stock_count }}</strong>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="glass-card text-center p-3" style="border-color: rgba(239, 68, 68, 0.3);">
+            <span class="text-secondary small d-block mb-1">Out of Stock Items</span>
+            <strong class="text-danger h2 font-monospace">{{ out_of_stock_count }}</strong>
+        </div>
+    </div>
+</div>
+<!-- INVENTORY ITEMS TABLE -->
+<div class="glass-card">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h3 class="text-white h5 mb-0"><i class="fas fa-boxes-stacked text-secondary me-2"></i>Stock Level Details</h3>
+        <span class="badge bg-secondary font-monospace">Real-Time Sync</span>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table cyber-table">
+            <thead>
+                <tr>
+                    <th>Product details</th>
+                    <th>Warehouse</th>
+                    <th>Current Stock</th>
+                    <th>Units Ordered</th>
+                    <th>Safety Stock</th>
+                    <th>Lead Time</th>
+                    <th>Supplier Reliability</th>
+                    <th class="text-end">Reorder Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in inventory_items %}
+                <tr>
+                    <td>
+                        <strong class="text-white">{{ item.product_name }}</strong><br>
+                        <span class="small font-monospace">{{ item.product_id }}</span>
+                        <span class="badge bg-dark text-secondary small ms-1">{{ item.category }}</span>
+                    </td>
+                    <td>{{ item.warehouse_location }}</td>
+                    <td>
+                        <span class="badge bg-{{ item.badge_class }} py-2 px-3 fw-bold" style="font-size: 0.9rem;">
+                            {{ item.current_stock }} units
+                        </span>
+                        <span class="d-block small text-secondary mt-1">Status: {{ item.status }}</span>
+                    </td>
+                    <td>
+                        {% if item.units_ordered > 0 %}
+                        <span class="text-info font-monospace fw-bold">+{{ item.units_ordered }} units</span>
+                        {% else %}
+                        <span class="text-secondary">0 (None)</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ item.safety_stock }} units</td>
+                    <td>{{ item.lead_time }} days</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <!-- Supplier progress bar -->
+                            <div class="progress" style="width: 60px; height: 6px;">
+                                <div class="progress-bar {% if item.supplier_reliability > 0.90 %}bg-success{% else %}bg-warning{% endif %}" 
+                                     style="width: {% widthratio item.supplier_reliability 1 100 %}%"></div>
+                            </div>
+                            <span class="small text-white font-monospace">{% widthratio item.supplier_reliability 1 100 %}%</span>
+                        </div>
+                    </td>
+                    <td class="text-end">
+                        <form action="/inventory/reorder/{{ item.product_id }}/" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-cyber">
+                                <i class="fas fa-truck-loading me-1"></i>Reorder
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center text-secondary py-3">No inventory items found. Check database configuration.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

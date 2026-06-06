@@ -1,0 +1,91 @@
+/* ==========================================================================
+   AI Demand Forecasting & Inventory Intelligence Platform - Theme Overrides
+   ========================================================================== */
+/* Light Theme Variables & Overrides */
+body.light-theme {
+    --bg-dark: #f3f7f4;
+    --bg-sidebar: #ffffff;
+    --bg-card: rgba(255, 255, 255, 0.85);
+    --border-color: rgba(16, 185, 129, 0.18);
+    --border-glow: rgba(16, 185, 129, 0.4);
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+    
+    --primary: #059669;
+    --primary-glow: rgba(5, 150, 105, 0.2);
+    --primary-dark: #064e3b;
+    
+    background-image: 
+        radial-gradient(at 10% 10%, rgba(5, 150, 105, 0.05) 0px, transparent 50%),
+        radial-gradient(at 90% 90%, rgba(34, 197, 94, 0.03) 0px, transparent 50%);
+}
+body.light-theme .brand-name {
+    background: linear-gradient(135deg, #064e3b, #059669);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+body.light-theme .menu-item a {
+    color: #4b5563;
+}
+body.light-theme .menu-item a:hover,
+body.light-theme .menu-item.active a {
+    color: #047857;
+    background: rgba(5, 150, 105, 0.08);
+    border-color: rgba(5, 150, 105, 0.2);
+}
+body.light-theme .glass-card {
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+}
+body.light-theme .top-header {
+    border-bottom-color: rgba(16, 185, 129, 0.15);
+}
+body.light-theme .header-title h1 {
+    color: #111827;
+}
+body.light-theme .form-control, 
+body.light-theme .form-select {
+    background-color: #ffffff;
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #1f2937;
+}
+body.light-theme .form-control:focus, 
+body.light-theme .form-select:focus {
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(5, 150, 105, 0.15);
+    color: #000;
+}
+body.light-theme .cyber-table {
+    background: rgba(255, 255, 255, 0.5);
+}
+body.light-theme .cyber-table th {
+    background-color: rgba(5, 150, 105, 0.08) !important;
+    color: #111827;
+}
+body.light-theme .cyber-table td {
+    color: #374151;
+    border-bottom-color: rgba(16, 185, 129, 0.08);
+}
+body.light-theme .cyber-table tr:hover td {
+    color: #000;
+    background-color: rgba(5, 150, 105, 0.04) !important;
+}
+body.light-theme .chat-bubble.bot {
+    background: #ffffff;
+    color: #1f2937;
+    border-color: rgba(16, 185, 129, 0.2);
+}
+body.light-theme .kpi-card {
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+body.light-theme .kpi-value {
+    color: #111827;
+}
+body.light-theme .wizard-step-node {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+body.light-theme .wizard-step-node.active {
+    background: rgba(5, 150, 105, 0.15);
+    color: #059669;
+}

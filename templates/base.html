@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} | AI Demand Forecasting</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome 6 Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS Stylesheets -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dark_theme.css' %}">
+</head>
+<body class="{% if theme == 'light' %}light-theme{% endif %}">
+    <div class="app-container">
+        <!-- LEFT SIDEBAR -->
+        <aside class="sidebar">
+            <div class="brand-section">
+                <div class="brand-icon">
+                    <i class="fas fa-chart-line text-white"></i>
+                </div>
+                <div class="brand-name">PredictiveAI</div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="menu-item {% if page_template == 'dashboard.html' %}active{% endif %}">
+                    <a href="/dashboard/">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item {% if page_template == 'upload_csv.html' or page_template == 'manual_forecast.html' %}active{% endif %}">
+                    <a href="/">
+                        <i class="fas fa-brain"></i>
+                        <span>Forecast Engine</span>
+                    </a>
+                </li>
+                <li class="menu-item {% if page_template == 'inventory.html' %}active{% endif %}">
+                    <a href="/inventory/">
+                        <i class="fas fa-boxes-stacked"></i>
+                        <span>Inventory Intelligence</span>
+                    </a>
+                </li>
+                <li class="menu-item {% if page_template == 'analytics.html' %}active{% endif %}">
+                    <a href="/analytics/">
+                        <i class="fas fa-chart-simple"></i>
+                        <span>Analytics Drilldown</span>
+                    </a>
+                </li>
+                <li class="menu-item {% if page_template == 'reports.html' %}active{% endif %}">
+                    <a href="/reports/">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span>Reports Export</span>
+                    </a>
+                </li>
+                <li class="menu-item {% if page_template == 'alerts.html' %}active{% endif %}">
+                    <a href="/alerts/">
+                        <i class="fas fa-triangle-exclamation"></i>
+                        <span>Alerts Center</span>
+                    </a>
+                </li>
+                <li class="menu-item {% if page_template == 'ai_insights.html' %}active{% endif %}">
+                    <a href="/ai-insights/">
+                        <i class="fas fa-wand-magic-sparkles"></i>
+                        <span>AI Simulation</span>
+                    </a>
+                </li>
+                <li class="menu-item {% if page_template == 'settings.html' %}active{% endif %}">
+                    <a href="/settings/">
+                        <i class="fas fa-gears"></i>
+                        <span>Settings Page</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="d-flex align-items-center gap-2 text-secondary px-2" style="font-size: 0.8rem;">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Enterprise Workspace</span>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- MAIN WRAPPER -->
+        <main class="main-wrapper">
+            <!-- TOP NAVBAR HEADER -->
+            <header class="top-header">
+                <div class="header-title">
+                    <h1>{{ title }}</h1>
+                    <p>AI-Powered Demand Forecasting & Inventory Optimization</p>
+                </div>
+                
+                <div class="system-status">
+                    <!-- Model badge -->
+                    <div class="status-badge text-info" style="border-color: rgba(6, 182, 212, 0.25);">
+                        <i class="fas fa-microchip"></i>
+                        <span>Engine: <strong>{{ model_name }}</strong></span>
+                    </div>
+                    
+                    <!-- System online indicator badge -->
+                    <div class="status-badge">
+                        <span class="status-indicator"></span>
+                        <span>AI Engine Online</span>
+                    </div>
+                    
+                    <!-- Quick theme toggler -->
+                    <button class="btn btn-sm btn-cyber-outline border-0 py-1" id="theme-toggle-btn">
+                        <i class="fas {% if theme == 'light' %}fa-moon{% else %}fa-sun{% endif %}"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- Messages alert container -->
+            {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show glass-card border-0 text-white" role="alert" style="background: rgba(16, 185, 129, 0.15); border-left: 4px solid var(--primary) !important;">
+                    <i class="fas {% if message.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <!-- PAGE CONTENT RENDER -->
+            {% include page_template %}
+        </main>
+    </div>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart.js Core Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom scripts -->
+    <script src="{% static 'js/theme.js' %}"></script>
+    <script src="{% static 'js/charts.js' %}"></script>
+    <script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html>

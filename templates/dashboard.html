@@ -1,0 +1,262 @@
+<!-- BATCH UPLOAD FEEDBACK BANNER -->
+{% if csv_summary %}
+<div class="glass-card mb-4" style="background: rgba(16, 185, 129, 0.1); border-color: var(--primary);">
+    <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3" style="border-bottom-color: rgba(255,255,255,0.08) !important;">
+        <h4 class="text-white h5 mb-0"><i class="fas fa-file-circle-check text-primary me-2"></i>Batch Preprocessing Report</h4>
+        <span class="badge bg-primary">Inference Ready</span>
+    </div>
+    <div class="row g-3 text-secondary small">
+        <div class="col-sm-3"><strong>Total Records Proccessed:</strong> <span class="text-white font-monospace">{{ csv_summary.total_rows }}</span></div>
+        <div class="col-sm-3"><strong>Categories Evaluated:</strong> <span class="text-white">{{ csv_summary.categories_count }}</span></div>
+        <div class="col-sm-3"><strong>Regions Mapped:</strong> <span class="text-white">{{ csv_summary.regions_count }}</span></div>
+        <div class="col-sm-3"><strong>Critical Stockout Risks:</strong> <span class="text-danger fw-bold">{{ csv_summary.high_stockouts_count }}</span></div>
+    </div>
+    <div class="mt-3 p-2 bg-dark rounded text-secondary border border-secondary border-opacity-10" style="font-size: 0.85rem;">
+        <strong class="text-white">System Logs:</strong> {{ csv_summary.preprocessing_report }} Forecast revenue generated: <strong>${{ csv_summary.total_revenue|floatformat:2 }}</strong>.
+    </div>
+</div>
+{% endif %}
+<!-- TOP 8 KPI CARDS GRID -->
+<div class="kpi-grid">
+    <!-- Card 1: Predicted Demand -->
+    <div class="glass-card kpi-card kpi-info">
+        <div class="kpi-header">
+            <span class="kpi-title">Predicted Demand</span>
+            <div class="kpi-icon"><i class="fas fa-boxes-packing"></i></div>
+        </div>
+        <div class="kpi-body">
+            <span class="kpi-value">{{ kpi_predicted_demand }}</span>
+            <span class="kpi-trend up"><i class="fas fa-arrow-trend-up"></i> +{{ kpi_demand_growth }}%</span>
+        </div>
+    </div>
+    <!-- Card 2: Revenue Forecast -->
+    <div class="glass-card kpi-card kpi-success">
+        <div class="kpi-header">
+            <span class="kpi-title">Revenue Forecast</span>
+            <div class="kpi-icon"><i class="fas fa-sack-dollar"></i></div>
+        </div>
+        <div class="kpi-body">
+            <span class="kpi-value">${{ kpi_revenue_forecast|floatformat:0 }}</span>
+            <span class="kpi-trend up"><i class="fas fa-arrow-trend-up"></i> Growth</span>
+        </div>
+    </div>
+    <!-- Card 3: Inventory Health -->
+    <div class="glass-card kpi-card {% if kpi_inventory_health > 80 %}kpi-success{% elif kpi_inventory_health > 50 %}kpi-warning{% else %}kpi-danger{% endif %}">
+        <div class="kpi-header">
+            <span class="kpi-title">Inventory Health</span>
+            <div class="kpi-icon"><i class="fas fa-heart-circle-check"></i></div>
+        </div>
+        <div class="kpi-body">
+            <span class="kpi-value">{{ kpi_inventory_health }}%</span>
+            <span class="text-secondary small">Health Score</span>
+        </div>
+    </div>
+    <!-- Card 4: Forecast Accuracy -->
+    <div class="glass-card kpi-card kpi-info">
+        <div class="kpi-header">
+            <span class="kpi-title">Forecast Accuracy</span>
+            <div class="kpi-icon"><i class="fas fa-bullseye"></i></div>
+        </div>
+        <div class="kpi-body">
+            <span class="kpi-value">{{ kpi_forecast_accuracy }}%</span>
+            <span class="text-secondary small">R² score index</span>
+        </div>
+    </div>
+</div>
+<div class="kpi-grid">
+    <!-- Card 5: Stockout Risks -->
+    <div class="glass-card kpi-card kpi-danger">
+        <div class="kpi-header">
+            <span class="kpi-title">Stockout Risks</span>
+            <div class="kpi-icon"><i class="fas fa-triangle-exclamation"></i></div>
+        </div>
+        <div class="kpi-body">
+            <span class="kpi-value">{{ kpi_stockout_risk_count }}</span>
+            <span class="text-secondary small">Critical items</span>
+        </div>
+    </div>
+    <!-- Card 6: Demand Growth -->
+    <div class="glass-card kpi-card kpi-success">
+        <div class="kpi-header">
+            <span class="kpi-title">Demand Growth</span>
+            <div class="kpi-icon"><i class="fas fa-chart-line"></i></div>
+        </div>
+        <div class="kpi-body">
+            <span class="kpi-value">+{{ kpi_demand_growth }}%</span>
+            <span class="text-secondary small">Month-over-Month</span>
+        </div>
+    </div>
+    <!-- Card 7: Fast Moving Category -->
+    <div class="glass-card kpi-card kpi-info">
+        <div class="kpi-header">
+            <span class="kpi-title">Fast Moving</span>
+            <div class="kpi-icon"><i class="fas fa-gauge-high"></i></div>
+        </div>
+        <div class="kpi-body">
+            <span class="kpi-value" style="font-size: 1.3rem;">{{ kpi_fast_moving }}</span>
+            <span class="text-secondary small">Max Demand</span>
+        </div>
+    </div>
+    <!-- Card 8: Slow Moving Category -->
+    <div class="glass-card kpi-card kpi-warning">
+        <div class="kpi-header">
+            <span class="kpi-title">Slow Moving</span>
+            <div class="kpi-icon"><i class="fas fa-hourglass-half"></i></div>
+        </div>
+        <div class="kpi-body">
+            <span class="kpi-value" style="font-size: 1.3rem;">{{ kpi_slow_moving }}</span>
+            <span class="text-secondary small">Min Demand</span>
+        </div>
+    </div>
+</div>
+<!-- GRAPHICAL PLOTS -->
+<div class="row g-4 mb-4">
+    <!-- Trend line chart -->
+    <div class="col-lg-8">
+        <div class="glass-card h-100">
+            <h3 class="text-white h5 mb-4"><i class="fas fa-chart-area text-info me-2"></i>Monthly Demand Trend Analysis</h3>
+            <div style="height: 320px;">
+                <canvas id="monthlyTrendChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Doughnut regional share -->
+    <div class="col-lg-4">
+        <div class="glass-card h-100">
+            <h3 class="text-white h5 mb-4"><i class="fas fa-chart-pie text-success me-2"></i>Region Share</h3>
+            <div style="height: 320px;">
+                <canvas id="regionShareChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row g-4 mb-4">
+    <!-- Category bar chart -->
+    <div class="col-lg-6">
+        <div class="glass-card h-100">
+            <h3 class="text-white h5 mb-4"><i class="fas fa-chart-column text-primary me-2"></i>Category-wise Demand Outlook</h3>
+            <div style="height: 250px;">
+                <canvas id="categoryOutlookChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AI insights -->
+    <div class="col-lg-6">
+        <div class="glass-card h-100 d-flex flex-column justify-content-between">
+            <div>
+                <h3 class="text-white h5 mb-4"><i class="fas fa-wand-magic-sparkles text-warning me-2"></i>AI-Powered Business Insights</h3>
+                <ul class="list-group list-group-flush bg-transparent">
+                    {% for insight in ai_insights %}
+                    <li class="list-group-item bg-transparent text-secondary border-0 ps-0 d-flex gap-2">
+                        <i class="fas fa-lightbulb text-warning mt-1"></i>
+                        <span>{{ insight }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="pt-3 border-top mt-3" style="border-top-color: rgba(255,255,255,0.05) !important;">
+                <a href="/ai-insights/" class="btn btn-cyber-outline w-100">
+                    <i class="fas fa-sliders me-2"></i>Open What-If Scenario Sandbox
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row g-4">
+    <!-- Recent Logs table -->
+    <div class="col-lg-8">
+        <div class="glass-card">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h3 class="text-white h5 mb-0"><i class="fas fa-history text-secondary me-2"></i>Recent Forecast Calculations</h3>
+                <a href="/reports/" class="btn btn-sm btn-cyber-outline py-1">View Full Logs</a>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table cyber-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Region</th>
+                            <th>Forecast</th>
+                            <th>Trend</th>
+                            <th>Confidence</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in recent_forecasts %}
+                        <tr>
+                            <td><strong class="text-white">{{ log.product_name }}</strong><br><span class="small font-monospace">{{ log.product_id }}</span></td>
+                            <td>{{ log.category }}</td>
+                            <td>{{ log.region }}</td>
+                            <td><strong class="text-white">{{ log.forecasted_demand }}</strong></td>
+                            <td>
+                                <span class="{% if log.demand_trend == 'Increasing' %}text-success{% else %}text-danger{% endif %}">
+                                    <i class="fas {% if log.demand_trend == 'Increasing' %}fa-arrow-trend-up{% else %}fa-arrow-trend-down{% endif %} me-1"></i>
+                                    {{ log.demand_trend }}
+                                </span>
+                            </td>
+                            <td><span class="badge bg-secondary py-1 px-2">{{ log.confidence_score }}%</span></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-secondary">No forecast records logged yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Active Alerts tick list -->
+    <div class="col-lg-4">
+        <div class="glass-card h-100">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h3 class="text-white h5 mb-0"><i class="fas fa-triangle-exclamation text-danger me-2"></i>Active Alerts Ticker</h3>
+                <a href="/alerts/" class="btn btn-sm btn-cyber-outline py-1">Manage</a>
+            </div>
+            
+            <div class="d-flex flex-column gap-3">
+                {% for alert in active_alerts %}
+                <div class="p-3 rounded border bg-dark bg-opacity-40 {% if alert.severity == 'Critical' %}border-danger border-opacity-30{% else %}border-warning border-opacity-30{% endif %}">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="badge {% if alert.severity == 'Critical' %}bg-danger{% else %}bg-warning{% endif %}">{{ alert.severity }}</span>
+                        <span class="text-secondary small">{{ alert.created_at|timesince }} ago</span>
+                    </div>
+                    <strong class="text-white d-block mb-1" style="font-size: 0.9rem;">{{ alert.alert_type }} - {{ alert.product_name }}</strong>
+                    <p class="text-secondary small mb-0">{{ alert.message }}</p>
+                </div>
+                {% empty %}
+                <div class="text-center py-5 text-secondary">
+                    <i class="fas fa-circle-check fa-2x text-success opacity-25 mb-2"></i>
+                    <p class="small mb-0">All inventory positions are currently stable.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- LOAD CHARTS JS -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Trend line chart
+        const trendLabels = {{ trend_labels|safe }};
+        const trendActual = {{ trend_actual|safe }};
+        const trendForecast = {{ trend_forecast|safe }};
+        def_line_chart('monthlyTrendChart', trendLabels, trendActual, trendForecast);
+        
+        // Region share doughnut
+        const regLabels = {{ reg_labels|safe }};
+        const regValues = {{ reg_values|safe }};
+        def_region_chart('regionShareChart', regLabels, regValues);
+        
+        // Category outlook bars
+        const catLabels = {{ cat_labels|safe }};
+        const catValues = {{ cat_values|safe }};
+        def_category_chart('categoryOutlookChart', catLabels, catValues);
+    });
+</script>

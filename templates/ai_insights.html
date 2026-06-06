@@ -1,0 +1,222 @@
+<div class="row g-4">
+    <!-- LEFT COLUMN: WHAT-IF sandbox -->
+    <div class="col-lg-7">
+        <div class="glass-card">
+            <h3 class="text-white h5 mb-3"><i class="fas fa-sliders text-primary me-2"></i>What-If Scenario Sandbox</h3>
+            <p class="text-secondary small mb-4">
+                Adjust pricing ranges, marketing budgets, and external factors below. The active ML model will run predictions in real-time to forecast the new demand.
+            </p>
+            
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label" for="sim-product-select">Select Product Base Template</label>
+                    <select id="sim-product-select" class="form-select">
+                        {% for prod in products %}
+                        <option value="{{ prod.product_id }}" 
+                                data-stock="{{ prod.current_stock }}"
+                                data-ordered="{{ prod.units_ordered }}"
+                                data-safety="{{ prod.safety_stock }}"
+                                data-leadtime="{{ prod.lead_time }}"
+                                data-reliability="{{ prod.supplier_reliability }}">
+                            {{ prod.product_name }} ({{ prod.product_id }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="sim-model-select">Active AI Model Algorithm</label>
+                    <select id="sim-model-select" class="form-select">
+                        <option value="LightGBM" {% if model_name == 'LightGBM' %}selected{% endif %}>LightGBM (Fastest & Accurate)</option>
+                        <option value="XGBoost" {% if model_name == 'XGBoost' %}selected{% endif %}>XGBoost</option>
+                        <option value="Random Forest" {% if model_name == 'Random Forest' %}selected{% endif %}>Random Forest</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Sliders -->
+                <div class="col-md-6">
+                    <h4 class="text-white h6 border-bottom pb-2 mb-3">Pricing & Marketing</h4>
+                    
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span class="slider-label">Selling Price</span>
+                            <span class="slider-value" id="sim-price-val">$100</span>
+                        </div>
+                        <input type="range" class="cyber-range" min="10" max="600" step="5" id="sim-price" value="100">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span class="slider-label">Discount Percentage</span>
+                            <span class="slider-value" id="sim-discount-val">0%</span>
+                        </div>
+                        <input type="range" class="cyber-range" min="0" max="50" step="1" id="sim-discount" value="0">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span class="slider-label">Marketing Spend</span>
+                            <span class="slider-value" id="sim-mkt-val">$150</span>
+                        </div>
+                        <input type="range" class="cyber-range" min="0" max="2000" step="50" id="sim-mkt" value="150">
+                    </div>
+                    
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="sim-promo" checked>
+                        <label class="form-check-label text-secondary small" for="sim-promo">Promotion Campaign Active</label>
+                    </div>
+                    
+                    <h4 class="text-white h6 border-bottom pb-2 mb-3 mt-4">External Factors</h4>
+                    
+                    <div class="mb-3">
+                        <label class="form-label" for="sim-weather">Weather</label>
+                        <select id="sim-weather" class="form-select">
+                            <option value="Sunny">Sunny</option>
+                            <option value="Cloudy">Cloudy</option>
+                            <option value="Rainy">Rainy</option>
+                            <option value="Snowy">Snowy</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label" for="sim-season">Season</label>
+                        <select id="sim-season" class="form-select">
+                            <option value="Spring">Spring</option>
+                            <option value="Summer" selected>Summer</option>
+                            <option value="Autumn">Autumn</option>
+                            <option value="Winter">Winter</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="sim-festival">
+                        <label class="form-check-label text-secondary small" for="sim-festival">Festival / Holiday Period</label>
+                    </div>
+                </div>
+                
+                <!-- Inventory Position parameters -->
+                <div class="col-md-6">
+                    <h4 class="text-white h6 border-bottom pb-2 mb-3">Inventory Positions</h4>
+                    
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span class="slider-label">Current Stock level</span>
+                            <span class="slider-value" id="sim-inventory-val">200</span>
+                        </div>
+                        <input type="range" class="cyber-range" min="0" max="1500" step="10" id="sim-inventory" value="200">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span class="slider-label">Units on Order</span>
+                            <span class="slider-value" id="sim-ordered-val">0</span>
+                        </div>
+                        <input type="range" class="cyber-range" min="0" max="500" step="10" id="sim-ordered" value="0">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span class="slider-label">Safety Stock limit</span>
+                            <span class="slider-value" id="sim-safety-val">30</span>
+                        </div>
+                        <input type="range" class="cyber-range" min="5" max="200" step="5" id="sim-safety" value="30">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span class="slider-label">Supplier Lead Time (Days)</span>
+                            <span class="slider-value" id="sim-lead-time-val">7 days</span>
+                        </div>
+                        <input type="range" class="cyber-range" min="1" max="30" step="1" id="sim-lead-time" value="7">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span class="slider-label">Supplier Reliability Rate</span>
+                            <span class="slider-value" id="sim-reliability-val">95%</span>
+                        </div>
+                        <input type="range" class="cyber-range" min="0.5" max="1.0" step="0.01" id="sim-reliability" value="0.95">
+                    </div>
+                    
+                    <div class="row g-2 mt-2">
+                        <div class="col">
+                            <label class="form-label" for="sim-inflation">Inflation (%)</label>
+                            <input type="number" step="0.1" class="form-control py-1 px-2 text-center" id="sim-inflation" value="3.0">
+                        </div>
+                        <div class="col">
+                            <label class="form-label" for="sim-fuel">Fuel Index</label>
+                            <input type="number" step="0.1" class="form-control py-1 px-2 text-center" id="sim-fuel" value="3.5">
+                        </div>
+                        <div class="col">
+                            <label class="form-label" for="sim-economy">Economy</label>
+                            <select id="sim-economy" class="form-select py-1 px-2 text-center" style="font-size: 0.85rem;">
+                                <option value="Good">Good</option>
+                                <option value="Average" selected>Average</option>
+                                <option value="Poor">Poor</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dynamic Outputs Summary -->
+            <div class="mt-4 pt-3 border-top border-secondary border-opacity-10">
+                <h4 class="text-white h6 mb-3">Simulated Target Predictions</h4>
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="p-2 rounded bg-dark text-center border border-secondary border-opacity-10">
+                            <span class="text-secondary small d-block" style="font-size:0.75rem;">Simulated Demand</span>
+                            <strong class="text-white h4 d-block my-1" id="sim-result-demand">...</strong>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-2 rounded bg-dark text-center border border-secondary border-opacity-10">
+                            <span class="text-secondary small d-block" style="font-size:0.75rem;">Projected Revenue</span>
+                            <strong class="text-success h4 d-block my-1" id="sim-result-revenue">...</strong>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-2 rounded bg-dark text-center border border-secondary border-opacity-10">
+                            <span class="text-secondary small d-block" style="font-size:0.75rem;">Stockout Risk</span>
+                            <strong class="h4 d-block my-1" id="sim-result-risk">...</strong>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-2 rounded bg-dark text-center border border-secondary border-opacity-10">
+                            <span class="text-secondary small d-block" style="font-size:0.75rem;">Rec Reorder Qty</span>
+                            <strong class="text-white h4 d-block my-1" id="sim-result-reorder">...</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- RIGHT COLUMN: AI chatbot -->
+    <div class="col-lg-5">
+        <div class="glass-card chatbot-container">
+            <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-3" style="border-bottom-color: rgba(255,255,255,0.08) !important;">
+                <h3 class="text-white h5 mb-0"><i class="fas fa-robot text-warning me-2"></i>AI Inventory Assistant</h3>
+                <span class="badge bg-secondary">Chat Online</span>
+            </div>
+            
+            <!-- Message Log -->
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-bubble bot">
+                    Hello! I am your AI Inventory Assistant. You can query forecast predictions, list active stock warnings, or check reorder suggestions directly. 
+                    <br><br>
+                    Try asking: <strong>"Are there any stockout risks?"</strong> or <strong>"Which products need to be reordered?"</strong>
+                </div>
+            </div>
+            
+            <!-- Chat input -->
+            <div class="input-group pt-3 border-top" style="border-top-color: rgba(255,255,255,0.05) !important;">
+                <input type="text" id="chat-input" class="form-control" placeholder="Ask assistant about inventory levels..." aria-label="Chat input">
+                <button class="btn btn-cyber" type="button" id="send-chat-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

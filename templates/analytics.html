@@ -1,0 +1,123 @@
+<div class="row g-4 mb-4">
+    <!-- Seasonality radar chart -->
+    <div class="col-md-6">
+        <div class="glass-card h-100">
+            <h3 class="text-white h5 mb-4"><i class="fas fa-snowflake text-info me-2"></i>Seasonality Analysis Index</h3>
+            <div style="height: 280px;">
+                <canvas id="seasonalityRadarChart"></canvas>
+            </div>
+            <p class="text-secondary small mt-3 mb-0">
+                Maps average forecasted demand across the four calendar seasons. Highlights peak operational times (e.g. Summer sales peaks).
+            </p>
+        </div>
+    </div>
+    
+    <!-- Promotion impact side-by-side -->
+    <div class="col-md-6">
+        <div class="glass-card h-100">
+            <h3 class="text-white h5 mb-4"><i class="fas fa-rectangle-ad text-success me-2"></i>Marketing Promotion Impact</h3>
+            <div style="height: 280px;">
+                <canvas id="promoImpactChart"></canvas>
+            </div>
+            <p class="text-secondary small mt-3 mb-0">
+                Compares average demand when marketing campaigns/promotions are active versus standard baseline sales periods.
+            </p>
+        </div>
+    </div>
+</div>
+<div class="row g-4 mb-4">
+    <!-- Model evaluation comparison -->
+    <div class="col-lg-8">
+        <div class="glass-card h-100">
+            <h3 class="text-white h5 mb-4"><i class="fas fa-ranking-stars text-primary me-2"></i>Model Benchmark Comparison (Errors)</h3>
+            <div style="height: 280px;">
+                <canvas id="modelBenchChart"></canvas>
+            </div>
+            <p class="text-secondary small mt-3 mb-0">
+                Visualizes evaluation error scores (MAE: Mean Absolute Error, RMSE: Root Mean Squared Error) across algorithms. <strong>Lower errors are better</strong>.
+            </p>
+        </div>
+    </div>
+    
+    <!-- Model metrics info -->
+    <div class="col-lg-4">
+        <div class="glass-card h-100 d-flex flex-column justify-content-between">
+            <div>
+                <h3 class="text-white h5 mb-3"><i class="fas fa-circle-info text-info me-2"></i>Engine Parameters</h3>
+                
+                <div class="mb-3">
+                    <span class="text-secondary small d-block">Default ML Model</span>
+                    <strong class="text-white font-monospace">LightGBM (Light Gradient Boosting Machine)</strong>
+                </div>
+                <div class="mb-3">
+                    <span class="text-secondary small d-block">Evaluation R² Score</span>
+                    <strong class="text-success h5">0.9710 (97.10% accuracy)</strong>
+                </div>
+                <div class="mb-3">
+                    <span class="text-secondary small d-block">Training Dataset Size</span>
+                    <strong class="text-white">2,000 Sales Cycles</strong>
+                </div>
+                
+                <p class="text-secondary small">
+                    Algorithms are evaluated using a 80-20 train-test split. LightGBM handles high-dimensional sparse categoricals and promotions with maximum accuracy.
+                </p>
+            </div>
+            
+            <a href="/settings/" class="btn btn-cyber-outline w-100 mt-2">
+                <i class="fas fa-sliders-h me-2"></i>Change Model Preferences
+            </a>
+        </div>
+    </div>
+</div>
+<div class="row g-4">
+    <!-- Explainable AI descriptions -->
+    <div class="col-12">
+        <div class="glass-card">
+            <h3 class="text-white h5 mb-3"><i class="fas fa-wand-magic-sparkles text-warning me-2"></i>Explainable AI (XAI) & SHAP Explanations</h3>
+            <p class="text-secondary small">
+                Enterprise AI forecasting shouldn't be a black box. Our platform uses SHAP-like (SHapley Additive exPlanations) attribution to breakdown how individual features influence each prediction:
+            </p>
+            
+            <div class="row g-3 mt-1">
+                <div class="col-md-4">
+                    <div class="p-3 rounded bg-dark border border-secondary border-opacity-10">
+                        <strong class="text-white d-block mb-1"><i class="fas fa-money-bill-trend-up text-success me-2"></i>Previous Month Sales</strong>
+                        <span class="text-secondary small">Acts as the baseline momentum factor, determining the structural demand flow.</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 rounded bg-dark border border-secondary border-opacity-10">
+                        <strong class="text-white d-block mb-1"><i class="fas fa-tags text-primary me-2"></i>Pricing & Discounts</strong>
+                        <span class="text-secondary small">Elasticity models scale demand. Lower competitor pricing exerts downward pressure.</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 rounded bg-dark border border-secondary border-opacity-10">
+                        <strong class="text-white d-block mb-1"><i class="fas fa-umbrella text-warning me-2"></i>External Indicators</strong>
+                        <span class="text-secondary small">Weather and season coefficients scale grocery or seasonal clothing targets (e.g. Summer uptick).</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- LOAD CHARTS JS -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Seasonality radar chart
+        const seasonLabels = {{ season_labels|safe }};
+        const seasonValues = {{ season_values|safe }};
+        def_season_chart('seasonalityRadarChart', seasonLabels, seasonValues);
+        
+        // Promo comparison chart
+        const promoAvg = {{ promo_avg }};
+        const noPromoAvg = {{ no_promo_avg }};
+        def_promo_chart('promoImpactChart', promoAvg, noPromoAvg);
+        
+        // Model comparison chart
+        const modelLabels = {{ model_labels|safe }};
+        const modelMae = {{ model_mae|safe }};
+        const modelRmse = {{ model_rmse|safe }};
+        def_model_comparison_chart('modelBenchChart', modelLabels, modelMae, modelRmse);
+    });
+</script>

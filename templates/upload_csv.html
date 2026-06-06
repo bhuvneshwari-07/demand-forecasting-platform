@@ -1,0 +1,70 @@
+<!-- HERO SECTION -->
+<div class="row mb-5 text-center py-4">
+    <div class="col-lg-8 mx-auto">
+        <h2 class="display-5 text-white fw-bold mb-3">AI Demand Forecasting & Inventory Intelligence Platform</h2>
+        <p class="lead text-secondary">
+            Predict product demand, optimize inventory levels, and reduce stockouts/overstock issues using advanced machine learning models (LightGBM, XGBoost, and Random Forest).
+        </p>
+    </div>
+</div>
+<!-- DUAL ENTRY CARDS -->
+<div class="row g-4 align-items-stretch">
+    <!-- OPTION 1: UPLOAD CSV DATASET -->
+    <div class="col-md-6">
+        <div class="glass-card h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="choice-card-header text-center mb-4">
+                    <i class="fas fa-file-csv fa-3x text-primary mb-3"></i>
+                    <h3 class="text-white h4">Option 1: Batch Forecast via CSV Upload</h3>
+                    <p class="text-secondary small">
+                        Upload your historical retail sales sheet to generate predictions for multiple products at once.
+                    </p>
+                </div>
+                
+                <!-- Drag and drop zone -->
+                <form action="/forecast/upload/" method="POST" enctype="multipart/form-data" id="csv-upload-form">
+                    {% csrf_token %}
+                    <div class="upload-zone mb-3" id="upload-zone">
+                        <i class="fas fa-cloud-arrow-up upload-icon"></i>
+                        <h4 class="text-white h6 mb-1">Drag and drop your sales CSV here</h4>
+                        <p class="text-secondary small mb-2">or click to browse local files</p>
+                        <input type="file" name="csv_file" id="csv-file-input" class="d-none" accept=".csv" required>
+                    </div>
+                </form>
+                
+                <!-- Progress bar -->
+                <div class="d-none mb-3" id="upload-progress-container">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-secondary small" id="upload-status-text">Uploading...</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated progress-bar-cyber" 
+                             role="progressbar" id="upload-progress-bar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center pt-3 border-top" style="border-top-color: rgba(255, 255, 255, 0.05) !important;">
+                <a href="/static/datasets/retail_historical_sales.csv" class="btn btn-sm btn-cyber-outline" download>
+                    <i class="fas fa-download me-2"></i>Download Sample CSV Dataset
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- OPTION 2: ENTER DATA MANUALLY -->
+    <div class="col-md-6">
+        <div class="glass-card h-100 d-flex flex-column justify-content-between">
+            <div class="choice-card text-center h-100 d-flex flex-column justify-content-center align-items-center">
+                <i class="fas fa-sliders fa-3x text-success mb-3"></i>
+                <h3 class="text-white h4">Option 2: Single-Product Manual Forecast</h3>
+                <p class="text-secondary small mb-4" style="max-width: 400px;">
+                    Enter pricing parameters, inventory positions, holiday schedules, and local weather factors manually to run fine-tuned individual predictions.
+                </p>
+                <a href="/forecast/manual/" class="btn btn-cyber">
+                    <i class="fas fa-keyboard me-2"></i>Open Manual Forecast Wizard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
